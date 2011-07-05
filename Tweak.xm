@@ -1,4 +1,4 @@
-#import <SBIconController.h>
+#import <SpringBoard/SpringBoard.h>
 #import <QuartzCore/CALayer.h>
 #import <substrate.h>
 #define DICTPATH @"/var/mobile/Library/Preferences/net.limneos.pagesnamessettings.plist"
@@ -12,6 +12,16 @@ static UITextField *aTextField=nil;
 @end
 
 @implementation PNTextFieldDelegate
+static id _sharedPNDelegate=nil;
+-(id)init{
+	_sharedPNDelegate=[super init];
+	return _sharedPNDelegate;
+}
++(id)sharedPNDelegate{
+	if (!_sharedPNDelegate)	
+		_sharedPNDelegate=[[self alloc] init];
+	return _sharedPNDelegate;
+}
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
 	if (textField.text.length>0){
 		NSMutableDictionary *dict=[NSMutableDictionary dictionaryWithContentsOfFile:DICTPATH];
@@ -63,7 +73,7 @@ static UITextField *aTextField=nil;
 		aTextField.borderStyle=UITextBorderStyleRoundedRect;
 		aTextField.clearButtonMode=UITextFieldViewModeWhileEditing;
 		aTextField.text=idleTextView.text;
-		aTextField.delegate=[[PNTextFieldDelegate alloc] init];
+		aTextField.delegate=[PNTextFieldDelegate sharedPNDelegate];
 		[[self contentView] addSubview:aTextField];
 		UIKeyboardEnableAutomaticAppearance();
 	}
